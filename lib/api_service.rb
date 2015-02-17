@@ -1,10 +1,9 @@
 class ApiService
 
-  @uri = nil
-  @verb = nil
-  @request_header = nil
-  @request_body = nil
-  @response_header = nil
-  @response_body = nil
+  attr_accessor :http_verb, :is_collection
+
+  def initialize(http_verb)
+    @http_verb = http_verb
+  end
 
 end
