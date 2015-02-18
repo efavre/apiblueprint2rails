@@ -4,3 +4,4 @@ ruby '2.0.0'
 
 gem 'rspec', '~>3.0'
 gem 'simplecov', :require => false, :group => :test
+gem 'redsnow', '~> 0.3.4'

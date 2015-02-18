@@ -1,27 +1,41 @@
-require('rails_resource')
+require 'redsnow'
 
 class MarkdownParser
 
   def self.parse(filename)
-    current_resource = nil
+
     resources = {}
     if filename != nil
-      File.open(filename).each do |line|
-        if line.start_with?("###")
-          http_verb = find_http_verb(line)
-          if http_verb
-            resources[current_resource] << {http_verb: http_verb, is_collection:@@is_collection}
+
+      apiblueprint_file = File.open(filename, "r")
+      apiblueprint_string = apiblueprint_file.read
+      result = RedSnow::parse(apiblueprint_string)
+      
+      result.ast.resource_groups.each do |resource_group| 
+        resource_group.resources.each do |resource|
+          @@is_collection = true
+          rails_resource_name = last_significative_uri_value(resource.uri_template)
+          resources[rails_resource_name] = [] unless resources.include?(rails_resource_name)
+          resource.actions.each do |action|
+            render_formats = []
+            action.examples.each do |example|
+              example.responses.each do |response|
+                if response.headers
+                  response.headers.collection.each do |header|
+                    if header[:name] == "Content-Type"
+                      render_formats << header[:value]
+                    end
+                  end
+                end
+              end
+            end
+            resources[rails_resource_name] << {method:action.method,is_collection:@@is_collection,render_formats:render_formats}
           end
-        elsif line.start_with?("##")
-          current_resource = find_resource_name(line)
-          if ! resources.include?(current_resource)
-            resources[current_resource] = []
-          end
-        elsif line.start_with?("+ Request")
-          resources[current_resource][:request] = "application/json"
         end
       end
+
     end
+
     return resources
   end
 

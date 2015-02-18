@@ -1,1 +1,2 @@
+# Notes
 ## Notes Collection [/notes]
