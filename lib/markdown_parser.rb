@@ -1,4 +1,4 @@
-require('rails_resource')
+require 'redsnow'
 
 class MarkdownParser
 
@@ -6,16 +6,17 @@ class MarkdownParser
     current_resource = nil
     resources = {}
     if filename != nil
-      File.open(filename).each do |line|
-        if line.start_with?("###")
-          http_verb = find_http_verb(line)
-          if http_verb
-            resources[current_resource] = [{http_verb: http_verb}]
-          end
-        elsif line.start_with?("##")
-          current_resource = find_resource_name(line)
-          if ! resources.include?(current_resource)
-            resources[current_resource] = []
+      apiblueprint_file = File.open(filename, "r")
+      apiblueprint_string = apiblueprint_file.read
+      result = RedSnow::parse(apiblueprint_string)
+      
+      result.ast.resource_groups.each do |resource_group| 
+        resource_group.resources.each do |resource|
+          @@is_collection = true
+          rails_resource_name = last_significative_uri_value(resource.uri_template)
+          resources[rails_resource_name] = [] unless resources.include?(rails_resource_name)
+          resource.actions.each do |action|
+            resources[rails_resource_name] << {method:action.method,is_collection:@@is_collection}
           end
         end
       end
@@ -54,6 +55,7 @@ class MarkdownParser
     if string != nil
       uri_values = string.split("/")
       while uri_values.last.start_with?("{")
+        @@is_collection = false
         uri_values.delete(uri_values.last)
       end
       if uri_values.any?

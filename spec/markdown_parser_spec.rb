@@ -1,31 +1,39 @@
 require 'markdown_parser'
 
 RSpec.describe MarkdownParser, "#parse" do
+  
   context "no file" do
     it "should return empty resource array" do
       resources = MarkdownParser.parse(nil)
       expect(resources).to eq({})
     end
   end
-
-  context "file with one uri between brackets" do
+  
+  context "file one_uri" do
     it "should return one resource mapped" do
       resources = MarkdownParser.parse("spec/test_files/one_uri.md")
       expect(resources).to eq({"notes"=> []})
     end
   end
 
-  context "file with several uris between brackets" do
+  context "file several_uri" do
     it "should return three resource mapped" do
       resources = MarkdownParser.parse("spec/test_files/several_uri.md")
       expect(resources).to eq({"notes"=>[],"users"=>[],"contacts"=>[]})
     end
   end
 
-  context "file with one uri and one verb" do
-    it "should return one resource mapped" do
+  context "file one_uri_one_verb" do
+    it "should return one resource mapped with one method" do
       resources = MarkdownParser.parse("spec/test_files/one_uri_one_verb.md")
-      expect(resources).to eq({"notes" => [{http_verb:"GET"}]})
+      expect(resources).to eq({"notes" => [{method:"GET",is_collection:true}]})
+    end
+  end
+
+  context "file contacts" do
+    it "should return one resource with several methods and is_collection" do
+      resources = MarkdownParser.parse("spec/test_files/contacts.md")
+      expect(resources).to eq({"notes" => [{method:"GET",is_collection:true},{method:"POST",is_collection:true},{method:"GET",is_collection:false},{method:"DELETE",is_collection:false}]})
     end
   end
 
