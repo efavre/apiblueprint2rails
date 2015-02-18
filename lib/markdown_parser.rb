@@ -10,7 +10,7 @@ class MarkdownParser
         if line.start_with?("###")
           http_verb = find_http_verb(line)
           if http_verb
-            resources[current_resource] = [{http_verb: http_verb}]
+            resources[current_resource] << {http_verb: http_verb}
           end
         elsif line.start_with?("##")
           current_resource = find_resource_name(line)

@@ -8,24 +8,31 @@ RSpec.describe MarkdownParser, "#parse" do
     end
   end
 
-  context "file with one uri between brackets" do
+  context "file with one URI" do
     it "should return one resource mapped" do
       resources = MarkdownParser.parse("spec/test_files/one_uri.md")
       expect(resources).to eq({"notes"=> []})
     end
   end
 
-  context "file with several uris between brackets" do
-    it "should return three resource mapped" do
+  context "file with several URIs" do
+    it "should return three resource with no verbs" do
       resources = MarkdownParser.parse("spec/test_files/several_uri.md")
       expect(resources).to eq({"notes"=>[],"users"=>[],"contacts"=>[]})
     end
   end
 
-  context "file with one uri and one verb" do
-    it "should return one resource mapped" do
+  context "file with one URI and one verb" do
+    it "should return one resource with one verb" do
       resources = MarkdownParser.parse("spec/test_files/one_uri_one_verb.md")
       expect(resources).to eq({"notes" => [{http_verb:"GET"}]})
+    end
+  end
+
+  context "file with one resource on multiple URIs and several verbs" do
+    it "should return one resource with several verbs" do
+      resources = MarkdownParser.parse("spec/test_files/contacts.md")
+      expect(resources).to eq({"notes" => [{http_verb:"GET", is_collection:true},{http_verb:"POST", is_collection:true},{http_verb:"GET", is_collection:false},{http_verb:"DELETE", is_collection:false}]})
     end
   end
 
