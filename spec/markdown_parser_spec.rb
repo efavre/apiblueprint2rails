@@ -22,17 +22,31 @@ RSpec.describe MarkdownParser, "#parse" do
     end
   end
 
-  context "file with one URI and one verb" do
-    it "should return one resource with one verb" do
-      resources = MarkdownParser.parse("spec/test_files/one_uri_one_verb.md")
-      expect(resources).to eq({"notes" => [{http_verb:"GET"}]})
+  context "file with one collection URI and one verb" do
+    it "should return one collection resource with one verb" do
+      resources = MarkdownParser.parse("spec/test_files/one_collection_uri_one_verb.md")
+      expect(resources).to eq({"notes" => [{http_verb:"GET", is_collection:true}]})
+    end
+  end
+
+  context "file with one member URI and one verb" do
+    it "should return one member resource with one verb" do
+      resources = MarkdownParser.parse("spec/test_files/one_member_uri_one_verb.md")
+      expect(resources).to eq({"notes" => [{http_verb:"GET", is_collection:false}]})
     end
   end
 
   context "file with one resource on multiple URIs and several verbs" do
     it "should return one resource with several verbs" do
-      resources = MarkdownParser.parse("spec/test_files/contacts.md")
+      resources = MarkdownParser.parse("spec/test_files/one_uri_collection_and_member_several_verb.md")
       expect(resources).to eq({"notes" => [{http_verb:"GET", is_collection:true},{http_verb:"POST", is_collection:true},{http_verb:"GET", is_collection:false},{http_verb:"DELETE", is_collection:false}]})
+    end
+  end
+
+  context "file with one resource on multiple URIs and several verbs and request" do
+    it "should return one resource with several verbs" do
+      resources = MarkdownParser.parse("spec/test_files/one_uri_collection_and_member_several_verb.md")
+      expect(resources).to eq({"notes" => [{http_verb:"GET", is_collection:true, request:"application/json"},{http_verb:"POST", is_collection:true,request:"application/json"},{http_verb:"GET", is_collection:false,request:"application/json"},{http_verb:"DELETE", is_collection:false,request:"application/json"}]})
     end
   end
 

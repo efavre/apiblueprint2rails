@@ -10,13 +10,15 @@ class MarkdownParser
         if line.start_with?("###")
           http_verb = find_http_verb(line)
           if http_verb
-            resources[current_resource] << {http_verb: http_verb}
+            resources[current_resource] << {http_verb: http_verb, is_collection:@@is_collection}
           end
         elsif line.start_with?("##")
           current_resource = find_resource_name(line)
           if ! resources.include?(current_resource)
             resources[current_resource] = []
           end
+        elsif line.start_with?("+ Request")
+          resources[current_resource][:request] = "application/json"
         end
       end
     end
@@ -52,8 +54,10 @@ class MarkdownParser
   def self.last_significative_uri_value(string)
     result = nil
     if string != nil
+      @@is_collection = true
       uri_values = string.split("/")
       while uri_values.last.start_with?("{")
+        @@is_collection = false
         uri_values.delete(uri_values.last)
       end
       if uri_values.any?
