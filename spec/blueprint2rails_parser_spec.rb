@@ -40,14 +40,14 @@ RSpec.describe Blueprint2railsParser, "#parse" do
   context "file one_uri_collection_and_member_several_verb" do
     it "should return one resource with several verbs" do
       resources = Blueprint2railsParser.parse("spec/test_files/one_uri_collection_and_member_several_verb.md")
-      expect(resources).to eq({"notes" => {actions:["index","create","show","delete"],render_formats:[]}})
+      expect(resources).to eq({"notes" => {actions:["index","create","show","destroy"],render_formats:[]}})
     end
   end
 
   context "file contacts" do
     it "should return one resource with several methods and is_collection" do
       resources = Blueprint2railsParser.parse("spec/test_files/contacts.md")
-      expect(resources).to eq({"notes" => {actions:["index","create","show","delete"], render_formats:["json"]}})
+      expect(resources).to eq({"notes" => {actions:["index","create","show","destroy"], render_formats:["json"]}})
     end
   end
 

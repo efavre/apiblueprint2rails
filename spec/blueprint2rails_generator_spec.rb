@@ -16,7 +16,12 @@ describe Blueprint2railsGenerator, type: :generator do
       assert_file "app/views/notes/index.json.jbuilder"
       assert_file "app/views/notes/create.json.jbuilder"
       assert_file "app/views/notes/show.json.jbuilder"
-      assert_file "app/views/notes/delete.json.jbuilder"
+      assert_file "app/views/notes/destroy.json.jbuilder"
+    end
+
+    it "creates notes controller" do
+      assert_file "app/controllers/notes_controller.rb"
     end
   end
+  
 end

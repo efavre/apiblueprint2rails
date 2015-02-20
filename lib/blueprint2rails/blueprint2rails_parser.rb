@@ -69,7 +69,7 @@ class Blueprint2railsParser
       end
     when "DELETE"
       if ! is_collection
-        rails_action = "delete"
+        rails_action = "destroy"
       end
     end
     return rails_action

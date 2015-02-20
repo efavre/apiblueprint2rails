@@ -53,7 +53,7 @@ RSpec.describe Blueprint2railsParser, "#get_rails_action_name" do
   context "DELETE and not is_collection" do
     it "should return delete" do
       rails_action = Blueprint2railsParser.get_rails_action_name("DELETE", false)
-      expect(rails_action).to eq("delete")
+      expect(rails_action).to eq("destroy")
     end
   end
 end
