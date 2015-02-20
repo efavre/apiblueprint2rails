@@ -1,6 +1,6 @@
 require 'redsnow'
 
-class BlueprintToRailsParser
+class Blueprint2railsParser
 
   def self.parse(filename)
 
