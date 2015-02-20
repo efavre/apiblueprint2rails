@@ -1,6 +1,6 @@
 require 'redsnow'
 
-class MarkdownParser
+class BlueprintToRailsParser
 
   def self.parse(filename)
 
@@ -15,9 +15,15 @@ class MarkdownParser
         resource_group.resources.each do |resource|
           @@is_collection = true
           rails_resource_name = last_significative_uri_value(resource.uri_template)
-          resources[rails_resource_name] = [] unless resources.include?(rails_resource_name)
+
+          unless resources.include?(rails_resource_name)
+            test = {actions:[],render_formats:[]}
+            resources[rails_resource_name] = test  
+          end
+
+          render_formats = []
+          rails_actions = []
           resource.actions.each do |action|
-            render_formats = []
             action.examples.each do |example|
               example.responses.each do |response|
                 if response.headers
@@ -29,8 +35,11 @@ class MarkdownParser
                 end
               end
             end
-            resources[rails_resource_name] << {method:action.method,is_collection:@@is_collection,render_formats:render_formats}
+            rails_actions << get_rails_action_name(action.method, @@is_collection)
           end
+          rails_actions = resources[rails_resource_name][:actions] | rails_actions
+          render_formats = render_formats | resources[rails_resource_name][:render_formats] 
+          resources[rails_resource_name] = {actions:rails_actions,render_formats:render_formats}
         end
       end
 
@@ -44,6 +53,31 @@ class MarkdownParser
   def self.find_resource_name(string)
     resource_name = last_significative_uri_value(between_brackets(string))
     return resource_name
+  end
+
+  def self.get_rails_action_name(method, is_collection)
+    rails_action = nil
+    case method
+    when "GET"
+      if is_collection
+        rails_action = "index"
+      else
+        rails_action = "show"
+      end
+    when "POST"
+      if is_collection
+        rails_action = "create"
+      end
+    when "PUT"
+      if ! is_collection
+        rails_action = "update"
+      end
+    when "DELETE"
+      if ! is_collection
+        rails_action = "delete"
+      end
+    end
+    return rails_action
   end
 
 # API_SERVICE

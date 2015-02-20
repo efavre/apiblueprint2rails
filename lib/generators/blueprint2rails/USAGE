@@ -1,0 +1,8 @@
+Description:
+    Explain the generator
+
+Example:
+    rails generate blueprint2rails path_to_apiblueprint_file.md
+
+    This will create:
+        what/will/it/create
