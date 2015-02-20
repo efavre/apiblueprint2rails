@@ -29,7 +29,7 @@ class BlueprintToRailsParser
                 if response.headers
                   response.headers.collection.each do |header|
                     if header[:name] == "Content-Type"
-                      render_formats << header[:value]
+                      render_formats << get_render_format(header[:value])
                     end
                   end
                 end
@@ -48,12 +48,7 @@ class BlueprintToRailsParser
     return resources
   end
 
-# RAILS_RESOURCE 
-
-  def self.find_resource_name(string)
-    resource_name = last_significative_uri_value(between_brackets(string))
-    return resource_name
-  end
+# TRANSLATE_TO_RAILS_FRIENDLY 
 
   def self.get_rails_action_name(method, is_collection)
     rails_action = nil
@@ -80,23 +75,16 @@ class BlueprintToRailsParser
     return rails_action
   end
 
-# API_SERVICE
-
-  def self.find_http_verb(string)
-    http_verb = between_brackets(string)
-    return http_verb
-  end
-
-# UTILS
-
-  def self.between_brackets(string)
-    result = nil
-    if string != nil
-      opening_bracket = Regexp.escape("[")
-      closing_bracket = Regexp.escape("]")
-      result = string[/#{opening_bracket}(.*?)#{closing_bracket}/m, 1]
+  def self.get_render_format(content_type)
+    format = content_type.split("/")[1]
+    render_format = nil
+    case format.downcase
+    when "json"
+      render_format = "json"
+    when "xml"
+      render_format = "xml"
     end
-    return result
+    return render_format
   end
 
   def self.last_significative_uri_value(string)
