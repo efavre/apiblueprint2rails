@@ -1,1 +1,1 @@
-Simply create rails resources based on an apiblueprint file.
+[WIP] Simply create rails resources based on an apiblueprint file.
