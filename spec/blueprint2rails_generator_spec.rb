@@ -66,6 +66,11 @@ describe Blueprint2railsGenerator, type: :generator do
   end
 
   context "generator on contacts.md file" do 
+
+    it "creates notes model" do
+      assert_file "app/models/note.rb"
+    end
+    
     it "creates json templates for index, create, show, delete on notes resource" do
       assert_file "app/views/notes/index.json.jbuilder"
       assert_file "app/views/notes/create.json.jbuilder"
@@ -80,7 +85,6 @@ describe Blueprint2railsGenerator, type: :generator do
     it "creates notes routes" do
       assert_file "config/routes.rb"
       expect(File.read("#{TEMP_DIR}/config/routes.rb")).to include("resources :notes, only: [:index, :create, :show, :destroy]")
-
     end
   end
 
