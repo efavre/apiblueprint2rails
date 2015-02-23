@@ -67,10 +67,17 @@ class Blueprint2railsParser
       if ! is_collection
         rails_action = "update"
       end
+    when "PATCH"
+      if ! is_collection
+        rails_action = "update"
+      end
     when "DELETE"
       if ! is_collection
         rails_action = "destroy"
       end
+    else 
+      is_collection_message = is_collection ? "/resource" : "/resource/{param}"
+      p "WARNING : no rails route found for #{method} on #{is_collection_message}"
     end
     return rails_action
   end

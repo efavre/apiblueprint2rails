@@ -56,6 +56,13 @@ RSpec.describe Blueprint2railsParser, "#get_rails_action_name" do
       expect(rails_action).to eq("destroy")
     end
   end
+
+  context "PATCH and not is_collection" do
+    it "should return delete" do
+      rails_action = Blueprint2railsParser.get_rails_action_name("PATCH", false)
+      expect(rails_action).to eq("update")
+    end
+  end
 end
 
 RSpec.describe Blueprint2railsParser, "#last_significative_uri_value" do
@@ -67,28 +74,28 @@ RSpec.describe Blueprint2railsParser, "#last_significative_uri_value" do
   end
   
   context "no / in string" do
-    it "should return whole string" do
+    it "should return whole URI" do
       last_significative_uri_value = Blueprint2railsParser.last_significative_uri_value("noslashhere")
       expect(last_significative_uri_value).to eq("noslashhere")
     end
   end
 
   context "one / in string" do
-    it "should return whole string" do
+    it "should return last URI part" do
       last_significative_uri_value = Blueprint2railsParser.last_significative_uri_value("oneslash/here")
       expect(last_significative_uri_value).to eq("here")
     end
   end
 
   context "two / in string" do
-    it "should return whole string" do
+    it "should return last URI part" do
       last_significative_uri_value = Blueprint2railsParser.last_significative_uri_value("two/slashes/here")
       expect(last_significative_uri_value).to eq("here")
     end
   end
 
   context "trailing / in string" do
-    it "should return whole string" do
+    it "should return last URI word" do
       last_significative_uri_value = Blueprint2railsParser.last_significative_uri_value("/two/slashes/here/")
       expect(last_significative_uri_value).to eq("here")
     end
@@ -104,7 +111,7 @@ RSpec.describe Blueprint2railsParser, "#get_render_format" do
   end
   
   context "APPLICATION/JSON" do
-    it "should return show" do
+    it "should return json" do
       render_format = Blueprint2railsParser.get_render_format("APPLICATION/JSON")
       expect(render_format).to eq("json")
     end
@@ -118,21 +125,21 @@ RSpec.describe Blueprint2railsParser, "#get_render_format" do
   end
 
   context "TEXT/XML" do
-    it "should return nil" do
+    it "should return xml" do
       render_format = Blueprint2railsParser.get_render_format("TEXT/XML")
       expect(render_format).to eq("xml")
     end
   end
 
   context "application/xml" do
-    it "should return nil" do
+    it "should return xml" do
       render_format = Blueprint2railsParser.get_render_format("application/xml")
       expect(render_format).to eq("xml")
     end
   end
 
   context "APPLICATION/XML" do
-    it "should return update" do
+    it "should return xml" do
       render_format = Blueprint2railsParser.get_render_format("APPLICATION/XML")
       expect(render_format).to eq("xml")
     end
