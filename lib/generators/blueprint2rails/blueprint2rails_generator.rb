@@ -35,10 +35,11 @@ class Blueprint2railsGenerator < Rails::Generators::NamedBase
 
   def create_rails_routes
     @api_resources.each do |api_resource|
-      # actions_array = @api_resources[@resource_name][:actions].map{|action| action.to_sym}
-      # inject_into_file 'config/routes.rb', after: "Rails.application.routes.draw do\n" do
-      #   "  resources :notes, only: #{actions_array}"
-      # end
+      resource_name = api_resource[0]
+      actions_array = @api_resources[resource_name][:actions].map{|action| action.to_sym}
+      inject_into_file 'config/routes.rb', after: "Rails.application.routes.draw do\n" do
+        "  resources :#{resource_name}, only: #{actions_array}"
+      end
     end
   end
 

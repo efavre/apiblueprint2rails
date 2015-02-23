@@ -9,13 +9,11 @@ describe Blueprint2railsGenerator, type: :generator do
 
   before(:all) do
     prepare_destination
-    run_generator
-
     Dir.mkdir("#{TEMP_DIR}/config") unless File.exists?("#{TEMP_DIR}/config")
     File.open("#{TEMP_DIR}/config/routes.rb", 'w') do |f|
       f.puts "Rails.application.routes.draw do\n\nend"
     end
-
+    run_generator
   end
 
   context "Blueprint2railsGenerator #read_template" do
@@ -77,6 +75,12 @@ describe Blueprint2railsGenerator, type: :generator do
 
     it "creates notes controller" do
       assert_file "app/controllers/notes_controller.rb"
+    end
+
+    it "creates notes routes" do
+      assert_file "config/routes.rb"
+      expect(File.read("#{TEMP_DIR}/config/routes.rb")).to include("resources :notes, only: [:index, :create, :show, :destroy]")
+
     end
   end
 
