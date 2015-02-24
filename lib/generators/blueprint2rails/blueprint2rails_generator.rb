@@ -2,6 +2,8 @@ require 'rails/generators'
 require 'blueprint2rails/blueprint2rails_parser'
 
 class Blueprint2railsGenerator < Rails::Generators::NamedBase
+  
+  include Rails::Generators::Migration
 
   source_root File.expand_path('../templates', __FILE__)
 
@@ -44,6 +46,13 @@ class Blueprint2railsGenerator < Rails::Generators::NamedBase
     end
   end
 
+  def create_rails_migration
+    @api_resources.each do |api_resource|
+      @resource_name = api_resource[0]
+      migration_template 'migrations/migration.rb', "db/migrate/create_#{plural_name}.rb"
+    end
+  end
+
 protected 
 
   def singular_name
@@ -75,6 +84,15 @@ protected
     template_file = File.expand_path('../templates', __FILE__) + "/" + relative_path
     result = ERB.new(File.read(template_file), nil, '-').result(binding)
     return result
+  end
+  
+  def self.next_migration_number(path)
+    unless @prev_migration_nr
+      @prev_migration_nr = Time.now.utc.strftime("%Y%m%d%H%M%S").to_i
+    else
+      @prev_migration_nr += 1
+    end
+    @prev_migration_nr.to_s
   end
 
 end
