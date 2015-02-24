@@ -1,8 +1,16 @@
 Description:
-    Explain the generator
+    The generator parses a apiblueprint md file to generate rails resources
 
 Example:
-    rails generate blueprint2rails Thing
+    rails generate blueprint2rails my_api_documentation.md
 
     This will create:
-        what/will/it/create
+        app/controllers/a_resources_controller.rb
+        app/controllers/b_resources_controller.rb
+        app/models/a_resource.rb
+        app/models/b_resource.rb
+        app/views/a_resources/action1.json.jbuilder
+        app/views/a_resources/action2.json.jbuilder
+        app/views/a_resources/action3.json.jbuilder
+        app/views/b_resources/action1.json.jbuilder
+        app/views/b_resources/action2.json.jbuilder

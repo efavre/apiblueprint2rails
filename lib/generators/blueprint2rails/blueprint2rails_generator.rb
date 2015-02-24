@@ -12,14 +12,12 @@ class Blueprint2railsGenerator < Rails::Generators::NamedBase
   def create_rails_models
     @api_resources.each do |api_resource|
       @resource_name = api_resource[0]
-      p api_resource.inspect
       template "models/model.rb", "app/models/#{singular_name}.rb"
     end
   end
 
   def create_rails_renderers_templates
     @api_resources.each do |api_resource|
-      say_status :create, :green, 'some_file'
       @resource_name = api_resource[0]
       api_resource[1][:actions].each do |rails_action|
         api_resource[1][:render_formats].each do |render_format|
@@ -31,7 +29,6 @@ class Blueprint2railsGenerator < Rails::Generators::NamedBase
 
   def create_rails_controllers
     @api_resources.each do |api_resource|
-      say_status :create, :green, 'some_file'
       @resource_name = api_resource[0]
       template "controllers/controller.rb", "app/controllers/#{plural_name}_controller.rb"
     end
@@ -39,7 +36,6 @@ class Blueprint2railsGenerator < Rails::Generators::NamedBase
 
   def create_rails_routes
     @api_resources.each do |api_resource|
-      say_status :create, :green, 'some_file'
       @resource_name = api_resource[0]
       actions_array = @api_resources[@resource_name][:actions].map{|action| action.to_sym}
       inject_into_file 'config/routes.rb', after: "Rails.application.routes.draw do\n" do
