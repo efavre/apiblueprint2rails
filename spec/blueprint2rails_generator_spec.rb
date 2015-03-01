@@ -92,6 +92,7 @@ describe Blueprint2railsGenerator, type: :generator do
       assert_file(file)
       expect(file).to match(/[0-9]+_create_notes.rb$/)
       expect(File.read(file)).to include("class CreateNotes < ActiveRecord::Migration")
+      expect(File.read(file)).to include("create_table :notes do |t|")
     end
 
   end
