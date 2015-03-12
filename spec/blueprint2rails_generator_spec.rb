@@ -82,6 +82,14 @@ describe Blueprint2railsGenerator, type: :generator do
       expect(File.read("#{TEMP_DIR}/config/routes.rb")).to include("resources :notes, only: [:index, :create, :show, :destroy]")
     end
 
+    it "creates notes migration" do
+      file = Dir.glob("#{TEMP_DIR}/db/migrate/*.rb").first
+      assert_file(file)
+      expect(file).to match(/[0-9]+_create_notes.rb$/)
+      expect(File.read(file)).to include("class CreateNotes < ActiveRecord::Migration")
+      expect(File.read(file)).to include("create_table :notes do |t|")
+    end
+
     it "creates note_test in test/models/" do
       assert_file "test/models/note_test.rb"
       expect(File.read("#{TEMP_DIR}/test/models/note_test.rb")).to include("class NoteTest < ActiveSupport::TestCase")
