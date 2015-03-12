@@ -34,6 +34,20 @@ class Blueprint2railsGenerator < Rails::Generators::NamedBase
     end
   end
 
+  def create_rails_controllers_tests
+    @api_resources.each do |api_resource|
+      @resource_name = api_resource[0]
+      template "tests/controller_test.rb", "test/controllers/#{plural_name}_controller_test.rb"
+    end
+  end
+
+  def create_rails_models_tests
+    @api_resources.each do |api_resource|
+      @resource_name = api_resource[0]
+      template "tests/model_test.rb", "test/models/#{singular_name}_test.rb"
+    end
+  end
+
   def create_rails_routes
     @api_resources.each do |api_resource|
       @resource_name = api_resource[0]
@@ -69,6 +83,15 @@ protected
       controller_content += read_template("controllers/#{action}.rb") + "\n\n"
     end
     return controller_content
+  end
+
+  def controller_test_methods
+    actions = @api_resources[@resource_name][:actions]
+    controller_test_content = "\n"
+    actions.each do |action|
+      controller_test_content += read_template("tests/#{action}.rb") + "\n\n"
+    end
+    return controller_test_content
   end
 
   def read_template(relative_path)

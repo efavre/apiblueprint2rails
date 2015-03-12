@@ -9,7 +9,7 @@ describe Blueprint2railsGenerator, type: :generator do
 
   before(:all) do
     prepare_destination
-    Dir.mkdir("#{TEMP_DIR}/config") unless File.exists?("#{TEMP_DIR}/config")
+    Dir.mkdir("#{TEMP_DIR}/config") unless File.exist?("#{TEMP_DIR}/config")
     File.open("#{TEMP_DIR}/config/routes.rb", 'w') do |f|
       f.puts "Rails.application.routes.draw do\n\nend"
     end
@@ -26,7 +26,6 @@ describe Blueprint2railsGenerator, type: :generator do
       blueprint2railsGenerator = generator
       blueprint2railsGenerator.instance_variable_set(:@resource_name, "notes")
       template = generator.read_template("controllers/create.rb")
-      expect(template).to include("def create")
       expect(template).to include("@note =")
     end
 
@@ -34,7 +33,6 @@ describe Blueprint2railsGenerator, type: :generator do
       blueprint2railsGenerator = generator
       blueprint2railsGenerator.instance_variable_set(:@resource_name, "notes")
       template = generator.read_template("controllers/destroy.rb")
-      expect(template).to include("def destroy")
       expect(template).to include("@note =")
     end
 
@@ -42,7 +40,6 @@ describe Blueprint2railsGenerator, type: :generator do
       blueprint2railsGenerator = generator
       blueprint2railsGenerator.instance_variable_set(:@resource_name, "notes")
       template = generator.read_template("controllers/index.rb")
-      expect(template).to include("def index")
       expect(template).to include("@notes =")
     end
 
@@ -51,7 +48,6 @@ describe Blueprint2railsGenerator, type: :generator do
       blueprint2railsGenerator = generator
       blueprint2railsGenerator.instance_variable_set(:@resource_name, "notes")
       template = generator.read_template("controllers/show.rb")
-      expect(template).to include("def show")
       expect(template).to include("@note =")
     end
     
@@ -59,7 +55,6 @@ describe Blueprint2railsGenerator, type: :generator do
       blueprint2railsGenerator = generator
       blueprint2railsGenerator.instance_variable_set(:@resource_name, "notes")
       template = generator.read_template("controllers/update.rb")
-      expect(template).to include("def update")
       expect(template).to include("@note =")
     end
   
@@ -86,8 +81,33 @@ describe Blueprint2railsGenerator, type: :generator do
       assert_file "config/routes.rb"
       expect(File.read("#{TEMP_DIR}/config/routes.rb")).to include("resources :notes, only: [:index, :create, :show, :destroy]")
     end
+
+    it "creates note_test in test/models/" do
+      assert_file "test/models/note_test.rb"
+      expect(File.read("#{TEMP_DIR}/test/models/note_test.rb")).to include("class NoteTest < ActiveSupport::TestCase")
+    end
+
+    it "creates notes_controller_test in test/controllers/" do
+      assert_file "test/controllers/notes_controller_test.rb"
+      expect(File.read("#{TEMP_DIR}/test/controllers/notes_controller_test.rb")).to include("class NotesControllerTest < ActionController::TestCase")
+    end
+
+    it "adds test on index to notes_controller_test" do
+      expect(File.read("#{TEMP_DIR}/test/controllers/notes_controller_test.rb")).to include("test \"should get index\" do")
+    end
+
+    it "adds test on create to notes_controller_test" do
+      expect(File.read("#{TEMP_DIR}/test/controllers/notes_controller_test.rb")).to include("test \"should create note\" do")
+    end
+
+    it "adds test on show to notes_controller_test" do
+      expect(File.read("#{TEMP_DIR}/test/controllers/notes_controller_test.rb")).to include("test \"should show note\" do")
+    end
+
+    it "adds test on destroy to notes_controller_test" do
+      expect(File.read("#{TEMP_DIR}/test/controllers/notes_controller_test.rb")).to include("test \"should destroy note\" do")
+    end
+
   end
-
-
 
 end
